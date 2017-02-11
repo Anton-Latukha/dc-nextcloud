@@ -1,5 +1,8 @@
 version: '2'
 
+# Automatic Nextcloud installation
+# Maintainer anton.latukha+dockerhub@gmail.com
+
 services:
 
   app:
