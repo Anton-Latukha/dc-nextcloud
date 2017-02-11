@@ -2,38 +2,53 @@ version: '2'
 
 services:
 
-  main:
+  app:
     depends_on:
       - db
-    image: wonderfall/nextcloud
+    image: wonderfall/nextcloud # https://hub.docker.com/r/wonderfall/nextcloud/
     links:
-      - db:db_nextcloud
+      - db:db
     environment:
-      - UID=1000
-      - GID=1000
+      - DB_TYPE # database type (sqlite3, mysql or pgsql) (default : sqlite3)
+      - DB_NAME # name of database (default : none)
+      - DB_USER # username for database (default : none)
+      - DB_PASSWORD # password for database user (default : none)
+      - DB_HOST # database host (default : none)
+      #- UID # nextcloud user id (default : 991)
+      #- GID # nextcloud group id (default : 991)
+      #- UPLOAD_MAX_SIZE # maximum upload size (default : 10G)SIZE
+      #- ADMIN_USER # username of the admin account (default : admin)
+      #- ADMIN_PASSWORD # password of the admin account (default : admin)
+      #- TZ # the system/log timezone (default : Etc/UTC)
+      #- CRON_PERIOD # time interval between two cron tasks (default : 15m)
+      #- REDIS_MAX_MEMORY # memory limit for Redis (default : 64mb)
+      #- APC_SHM_SIZE # apc memory size (default : 128M)
+      #- OPCACHE_MEM_SIZE # opcache memory size in megabytes (default : 128)
     volumes:
-    - data:/data
-    - config:/config
-    - apps2:/apps2
+    - D:/data # Nextcloud data.
+    - C:/config # config.php location.
+    - A:/apps2 # Nextcloud downloaded apps.
+    - Redis:/var/lib/redis # Redis dumpfile location.
     ports:
-      - 80:80
+      - 80:8888
 
   db:
-    image: mariadb:10
+    image: mariadb
     volumes:
-      - mysql:/var/lib/mysql
+      - DB:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=supersecretpassword
-      - MYSQL_DATABASE=nextcloud
-      - MYSQL_USER=nextcloud
-      - MYSQL_PASSWORD=supersecretpassword
-
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_DATABASE
+      - MYSQL_USER
+      - MYSQL_PASSWORD
 volumes:
-  data:
+  D:
     driver: local
-  config:
+  C:
     driver: local
-  apps2:
+  A:
     driver: local
-  mysql:
+  Redis:
+    driver: local
+  DB:
     driver: local
